@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bgv2cv2nsuaj2"]
+[gd_scene load_steps=8 format=3 uid="uid://bgv2cv2nsuaj2"]
 
 [ext_resource type="PackedScene" uid="uid://chd1gqe7uy4l0" path="res://player_capsule_scene.tscn" id="1_eeva4"]
 
@@ -19,6 +19,8 @@ tonemap_mode = 2
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_djsss"]
 albedo_color = Color(0, 0.196078, 0.14902, 1)
 
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_f3nxq"]
+
 [node name="Node3D" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -33,8 +35,14 @@ transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0)
 mesh = SubResource("PlaneMesh_708ly")
 surface_material_override/0 = SubResource("StandardMaterial3D_djsss")
 
-[node name="Node3D" parent="." instance=ExtResource("1_eeva4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.19438, 0)
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.346936, 0.937889, 0, -0.937889, 0.346936, 0, 8.96466, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5031188, 0)
+shape = SubResource("WorldBoundaryShape3D_f3nxq")
+
+[node name="player_test_capsule" parent="." instance=ExtResource("1_eeva4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Camera3D" type="Camera3D" parent="player_test_capsule"]
+transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 0, 12.829909, 8.82898)
