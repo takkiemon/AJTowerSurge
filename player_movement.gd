@@ -4,6 +4,7 @@ extends CharacterBody3D
 @export var speed = 14
 # The downward acceleration when in the air, in meters per second squared.
 @export var fall_acceleration = 75
+var bullet_scene = preload("res://test_scenes/test_bullet.tscn")
 
 var target_velocity = Vector3.ZERO
 
@@ -30,6 +31,11 @@ func _physics_process(delta):
 		direction.z += 1
 	if Input.is_action_pressed("move_up"):
 		direction.z -= 1
+		
+	if Input.is_action_pressed("shoot_test_bullet"):
+		var instance := bullet_scene.instantiate() as Node3D
+		instance.global_position = position
+		add_sibling(instance)
 		
 	if direction != Vector3.ZERO:
 		direction = direction.normalized()

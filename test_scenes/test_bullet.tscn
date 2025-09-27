@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://djehvvexcy5kj"]
+
+[ext_resource type="Script" uid="uid://dufgf6nr7s243" path="res://test_scenes/test_bullet.gd" id="1_w2usr"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_8iqr7"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1meno"]
+albedo_color = Color(0.20511743, 0.20511743, 0.20511743, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_4q3ci"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_w2usr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_8iqr7")
+surface_material_override/0 = SubResource("StandardMaterial3D_1meno")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("SphereShape3D_4q3ci")
