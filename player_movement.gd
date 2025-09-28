@@ -2,8 +2,6 @@ extends CharacterBody3D
 
 # How fast the player moves in meters per second.
 @export var speed = 14
-# The downward acceleration when in the air, in meters per second squared.
-@export var fall_acceleration = 75
 @export var fire_rate = .2
 var firing_timer = 0
 
@@ -71,8 +69,8 @@ func _shoot_bullet(delta):
 		firing_timer += delta
 		if (firing_timer <= fire_rate):
 			return
-		var amount_of_bullets = firing_timer / fire_rate
-		firing_timer -= amount_of_bullets
+		var amount_of_bullets = int(firing_timer / fire_rate)
+		firing_timer -= amount_of_bullets * fire_rate
 		for i in range(amount_of_bullets):
 			var instance := bullet_scene.instantiate() as Node3D
 			
