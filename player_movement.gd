@@ -2,21 +2,20 @@ extends CharacterBody3D
 
 # How fast the player moves in meters per second.
 @export var speed = 14
-@export var fire_rate = .2
-var firing_timer = 0
 
-@onready var bullet_scene = preload("res://test_scenes/test_bullet.tscn")
+@onready var test_gun_scene = preload("res://test_scenes/test_gun.tscn")
 @onready var camera = get_node("Camera3D")
 
 var forward = Vector3(1, 0, 0)
 var target_velocity = Vector3.ZERO
 var rayOrigin = Vector3.ZERO
 var rayEnd = Vector3.ZERO
+var _has_test_gun = false
 
-func _physics_process(delta):
+func _physics_process(_delta):
+	_add_or_remove_gun()
 	_move_player()
 	_look_at_mouse()
-	_shoot_bullet(delta)
 
 func _move_player():
 	# We create a local variable to store the input direction.
@@ -36,8 +35,6 @@ func _move_player():
 		
 	if direction != Vector3.ZERO:
 		direction = direction.normalized()
-		# Setting the basis property will affect the rotation of the node.
-		#$Pivot.basis = Basis.looking_at(direction)
 		
 		# Ground Velocity
 		target_velocity.x = direction.x * speed
@@ -47,8 +44,27 @@ func _move_player():
 		velocity = target_velocity
 		move_and_slide()
 	
+func _add_or_remove_gun():
+	print("checking ADD||RMV-GUN...")
+	if Input.is_action_pressed("add_or_remove_gun"):
+		print("PRESS ADD||RMV-GUN")
+		if !_has_test_gun:
+			_has_test_gun = true
+			print("ADD GUN START")
+			var gun_instance := test_gun_scene.instantiate() as Node3D
+			add_child(gun_instance)
+			gun_instance.position = Vector3(1, 0, 0)
+			gun_instance.name = "test_gun"
+			print("ADD GUN END")
+		else:
+			_has_test_gun = false
+			print("RMV GUN START")
+			var test_gun = get_node("test_gun")
+			test_gun.remove_child(test_gun)
+			print("RMV GUN END")
+
 func _look_at_mouse():
-	#gettign the current phyisics state
+	#getting the current phyisics state
 	var space_state = get_world_3d().direct_space_state
 	#getting the current mouse position
 	var mouse_position = get_viewport().get_mouse_position()
@@ -63,21 +79,5 @@ func _look_at_mouse():
 
 	var pos = intersection.position
 	forward = Vector3(pos.x, 0, pos.z)
-	
-func _shoot_bullet(delta):
-	if Input.is_action_pressed("shoot_test_bullet"):
-		firing_timer += delta
-		if (firing_timer <= fire_rate):
-			return
-		var amount_of_bullets = int(firing_timer / fire_rate)
-		firing_timer -= amount_of_bullets * fire_rate
-		for i in range(amount_of_bullets):
-			var instance := bullet_scene.instantiate() as Node3D
-			
-			instance.global_position = position
-			instance.set_shooting_variables(10, forward)
-			add_sibling(instance)
-	else:
-		firing_timer += delta
-		if (firing_timer > fire_rate):
-			firing_timer = fire_rate
+	#rotation = forward
+	rotation = forward.angleto

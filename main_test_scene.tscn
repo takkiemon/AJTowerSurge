@@ -21,7 +21,7 @@ albedo_color = Color(0, 0.196078, 0.14902, 1)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_f3nxq"]
 
-[node name="Node3D" type="Node3D"]
+[node name="World" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_sgvrc")
