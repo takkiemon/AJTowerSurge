@@ -12,6 +12,13 @@ var rayOrigin = Vector3.ZERO
 var rayEnd = Vector3.ZERO
 var _has_test_gun = false
 
+# idk lmao
+var space_state = null
+var mouse_position = Vector2.ZERO
+var params = PhysicsRayQueryParameters3D.new()
+var intersection = PhysicsRayQueryParameters3D.new()
+var pos = Vector3.ZERO
+
 func _physics_process(_delta):
 	_add_or_remove_gun()
 	_move_player()
@@ -45,39 +52,39 @@ func _move_player():
 		move_and_slide()
 	
 func _add_or_remove_gun():
-	print("checking ADD||RMV-GUN...")
 	if Input.is_action_pressed("add_or_remove_gun"):
-		print("PRESS ADD||RMV-GUN")
 		if !_has_test_gun:
 			_has_test_gun = true
-			print("ADD GUN START")
 			var gun_instance := test_gun_scene.instantiate() as Node3D
 			add_child(gun_instance)
 			gun_instance.position = Vector3(1, 0, 0)
 			gun_instance.name = "test_gun"
-			print("ADD GUN END")
 		else:
 			_has_test_gun = false
-			print("RMV GUN START")
 			var test_gun = get_node("test_gun")
 			test_gun.remove_child(test_gun)
-			print("RMV GUN END")
 
 func _look_at_mouse():
 	#getting the current phyisics state
-	var space_state = get_world_3d().direct_space_state
+	space_state = get_world_3d().direct_space_state
 	#getting the current mouse position
-	var mouse_position = get_viewport().get_mouse_position()
+	mouse_position = get_viewport().get_mouse_position()
 
 	rayOrigin = camera.project_ray_origin(mouse_position)
 
 	rayEnd = rayOrigin + camera.project_ray_normal(mouse_position) * 2000
-	var params = PhysicsRayQueryParameters3D.new()
+	params = PhysicsRayQueryParameters3D.new()
 	params.from = rayOrigin
 	params.to = rayEnd
-	var intersection = space_state.intersect_ray(params)
-
-	var pos = intersection.position
-	forward = Vector3(pos.x, 0, pos.z)
+	intersection = space_state.intersect_ray(params)
+	
+	# Somehow this crashes without the check. I'm not even sure it's ever true
+	if intersection.has('position'): # OK, so the issue is that we only check for intersection with the player? Pretty sure I'm trying to find intersection with the screen or the ground or something
+		print("YES intersect")
+		pos = intersection["position"]
+		forward = Vector3(pos.x, pos.y, pos.z)
 	#rotation = forward
-	rotation = forward.angleto
+	#rotation = forward.angle_to()
+		rotation = forward
+	else:
+		print("NO intersect")
